@@ -1,3 +1,5 @@
+[![Latest Stable Version](http://poser.pugx.org/karacweb/infomaniak-newsletter/v)](https://packagist.org/packages/karacweb/infomaniak-newsletter)
+
 Infomaniak Newsletter for Laravel helps you interact with Infomaniak's API.
 
 
