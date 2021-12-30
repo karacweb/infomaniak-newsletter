@@ -1,0 +1,37 @@
+{
+    "name": "karacweb/infomaniak-newsletter",
+    "description": "Implementation of the Infomaniak's newsletter service for Laravel",
+    "type": "library",
+    "require": {
+        "php": "^7.4|^8.0",
+        "infomaniak/client-api-newsletter": "~1.0",
+        "illuminate/support": "^8.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.4.4",
+        "phpunit/phpunit": "^9.5.10"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Axel Piaget",
+            "email": "axel@karac.ch"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Karacweb\\InfomaniakNewsletter\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Karacweb\\InfomaniakNewsletter\\ServiceProvider"
+            ],
+            "aliases": {
+                "InfomaniakNewsletter": "Karacweb\\InfomaniakNewsletter\\Facade"
+            }
+        }
+    }   
+}
