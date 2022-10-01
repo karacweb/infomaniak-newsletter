@@ -165,6 +165,10 @@ class Newsletter {
     }
 
     public function importContact(string $email, array $fields = [], string $listName = '') {
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
         $listId = $this->findList($listName);
 
         $parameters = array_merge(
