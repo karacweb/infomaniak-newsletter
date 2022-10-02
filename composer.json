@@ -9,7 +9,8 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.4.4",
-        "phpunit/phpunit": "^9.5.10"
+        "phpunit/phpunit": "^9.5.10",
+        "nunomaduro/phpinsights": "^2.6"
     },
     "repositories": [
         {
@@ -39,5 +40,10 @@
                 "InfomaniakNewsletter": "Karacweb\\InfomaniakNewsletter\\Facade"
             }
         }
-    }   
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }
