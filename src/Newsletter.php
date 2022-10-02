@@ -6,13 +6,13 @@ use Illuminate\Support\Collection;
 use \Infomaniak\ClientApiNewsletter\Action;
 use \Infomaniak\ClientApiNewsletter\Client;
 
-class Newsletter {
+final class Newsletter {
 
     protected $infomaniakApi;
 
-    protected $lists;
+    protected Collection $lists;
 
-    protected $defaultList;
+    protected string $defaultList;
 
     public function __construct(Client $infomaniakApi, Collection $lists, string $defaultList) {
         $this->infomaniakApi = $infomaniakApi;
@@ -66,7 +66,7 @@ class Newsletter {
         $response = $this->infomaniakApi->put(Client::CONTACT, [
             'id' => $email,
             'params' => $parameters
-       ]);
+        ]);
 
         if(! $response->success() ) {
             return false;
@@ -89,7 +89,7 @@ class Newsletter {
         return $response->datas();
     }
 
-    public function updateMailinglist(string $listName = '', string $name) {
+    public function updateMailinglist(string $listName, string $name) {
         $listId = $this->findList($listName);
 
         $response = $this->infomaniakApi->put(Client::MAILINGLIST, [
@@ -109,7 +109,7 @@ class Newsletter {
     public function deleteMailinglist(string $listName = '') {
         $listId = $this->findList($listName);
 
-        $response = $client->delete(Client::MAILINGLIST, [
+        $response = $this->infomaniakApi->delete(Client::MAILINGLIST, [
             'id' => $listId
         ]);
 
@@ -119,7 +119,14 @@ class Newsletter {
 
         return $response->datas();
     }
-
+    
+    /**
+     * @param string $listName Name of the mailing list 
+     * @param array $options = [
+     *   'page' => 2, // Current page
+     *   'perPage' => 20, // Number of contacts per page
+     * ]
+     */
     public function getContacts(string $listName = '', array $options = []) {
         $listId = $this->findList($listName);
 
@@ -150,10 +157,14 @@ class Newsletter {
         return $response->datas();
     }
 
+    /**
+     * @param array $options = [
+     *   'page' => 2, // Current page
+     *   'perPage' => 20, // Number of lists per page
+     * ]
+     */
     public function getMailinglists(array $options = []) {
         $response = $this->infomaniakApi->get(Client::MAILINGLIST, [
-            'id' => $listId,
-            'action' => Action::LISTCONTACT,
             'params' => $options
         ]);
 
@@ -164,6 +175,14 @@ class Newsletter {
         return $response->datas();
     }
 
+    /**
+     * @param string $email The contact's email address
+     * @param array $fields = [
+     *      "firstname" => "John",
+     *      "lastname" => "Doe",
+     * ]
+     * @param string $listName Name of the mailing list 
+     */
     public function importContact(string $email, array $fields = [], string $listName = '') {
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false;
