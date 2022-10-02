@@ -57,6 +57,8 @@ class NewsletterTest extends TestCase {
             ]
         ]);
 
-        $this->newsletter->importContact($email);
+        $response = $this->newsletter->importContact($email);
+
+        $this->assertIsArray($response);
     }
 }
