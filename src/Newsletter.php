@@ -14,7 +14,7 @@ final class Newsletter
     protected $infomaniakApi;
     protected Collection $lists;
     protected string $defaultList;
-    
+
     public function __construct(Client $infomaniakApi, Collection $lists, string $defaultList)
     {
         $this->infomaniakApi = $infomaniakApi;
@@ -295,23 +295,23 @@ final class Newsletter
         return $response->datas();
     }
 
-    public function updateCampaign(int $campaignId, string $subject = null, string $fromName = null, string $lang = null, string $fromAddr = null, string $content = null)
+    public function updateCampaign(int $campaignId, ?string $subject = null, ?string $fromName = null, ?string $lang = null, ?string $fromAddr = null, ?string $content = null)
     {
         $params = [];
-        if(!is_null($subject)) {
-            $params["subject"] = $subject;
+        if (! is_null($subject)) {
+            $params['subject'] = $subject;
         }
-        if(!is_null($fromName)) {
-            $params["email_from_name"] = $fromName;
+        if (! is_null($fromName)) {
+            $params['email_from_name'] = $fromName;
         }
-        if(!is_null($lang)) {
-            $params["lang"] = $lang;
+        if (! is_null($lang)) {
+            $params['lang'] = $lang;
         }
-        if(!is_null($fromAddr) && filter_var($fromAddr, FILTER_VALIDATE_EMAIL)) {
-            $params["email_from_addr"] = $fromAddr;
+        if (! is_null($fromAddr) && filter_var($fromAddr, FILTER_VALIDATE_EMAIL)) {
+            $params['email_from_addr'] = $fromAddr;
         }
-        if(!is_null($content)) {
-            $params["content"] = $content;
+        if (! is_null($content)) {
+            $params['content'] = $content;
         }
 
         $response = $this->infomaniakApi->post(Client::CAMPAIGN, [
@@ -337,7 +337,7 @@ final class Newsletter
             'id' => $campaignId,
             'action' => Action::SCHEDULE,
             'params' => [
-                'scheduled_at' => $scheduled_at->format("Y-m-d H:i:s"),
+                'scheduled_at' => $scheduled_at->format('Y-m-d H:i:s'),
             ],
         ]);
         if (! $response->success()) {
