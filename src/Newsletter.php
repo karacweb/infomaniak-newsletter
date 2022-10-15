@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Karacweb\InfomaniakNewsletter;
 
+use DateTime;
 use Illuminate\Support\Collection;
 use Infomaniak\ClientApiNewsletter\Action;
 use Infomaniak\ClientApiNewsletter\Client;
@@ -13,7 +14,7 @@ final class Newsletter
     protected $infomaniakApi;
     protected Collection $lists;
     protected string $defaultList;
-    
+
     public function __construct(Client $infomaniakApi, Collection $lists, string $defaultList)
     {
         $this->infomaniakApi = $infomaniakApi;
@@ -270,5 +271,112 @@ final class Newsletter
             }
         }
         return false;
+    }
+
+    public function createCampaign(string $subject, string $fromName, string $lang, string $fromAddr, string $content)
+    {
+        if (! filter_var($fromAddr, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        $response = $this->infomaniakApi->post(Client::CAMPAIGN, [
+            'params' => [
+                'subject' => $subject,
+                'email_from_name' => $fromName,
+                'lang' => $lang,
+                'email_from_addr' => $fromAddr,
+                'content' => $content,
+            ],
+        ]);
+        if (! $response->success()) {
+            return false;
+        }
+
+        return $response->datas();
+    }
+
+    public function updateCampaign(int $campaignId, ?string $subject = null, ?string $fromName = null, ?string $lang = null, ?string $fromAddr = null, ?string $content = null)
+    {
+        $params = [];
+        if (! is_null($subject)) {
+            $params['subject'] = $subject;
+        }
+        if (! is_null($fromName)) {
+            $params['email_from_name'] = $fromName;
+        }
+        if (! is_null($lang)) {
+            $params['lang'] = $lang;
+        }
+        if (! is_null($fromAddr) && filter_var($fromAddr, FILTER_VALIDATE_EMAIL)) {
+            $params['email_from_addr'] = $fromAddr;
+        }
+        if (! is_null($content)) {
+            $params['content'] = $content;
+        }
+
+        $response = $this->infomaniakApi->post(Client::CAMPAIGN, [
+            'id' => $campaignId,
+            'params' => $params,
+        ]);
+
+        if (! $response->success()) {
+            return false;
+        }
+
+        return $response->datas();
+    }
+
+    public function scheduleCampaign(int $campaignId, DateTime $scheduled_at)
+    {
+        // We cannot send a campaign in the past.
+        if (new DateTime() > $scheduled_at) {
+            return false;
+        }
+
+        $response = $this->infomaniakApi->post(Client::CAMPAIGN, [
+            'id' => $campaignId,
+            'action' => Action::SCHEDULE,
+            'params' => [
+                'scheduled_at' => $scheduled_at->format('Y-m-d H:i:s'),
+            ],
+        ]);
+        if (! $response->success()) {
+            return false;
+        }
+
+        return $response->datas();
+    }
+
+    public function sendCampaign(int $campaignId)
+    {
+        $response = $this->infomaniakApi->post(Client::CAMPAIGN, [
+            'id' => $campaignId,
+            'action' => Action::SEND,
+        ]);
+        if (! $response->success()) {
+            return false;
+        }
+
+        return $response->datas();
+    }
+
+    public function testCampaign(int $campaignId, string $email)
+    {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        $response = $this->infomaniakApi->post(Client::CAMPAIGN, [
+            'id' => $campaignId,
+            'action' => Action::TEST,
+            'params' => [
+                'email' => $email,
+            ],
+        ]);
+        if (! $response->success()) {
+            return false;
+        }
+
+        return $response->datas();
     }
 }
