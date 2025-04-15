@@ -5,7 +5,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "karacweb/client-api-newsletter": "~2.0",
-        "illuminate/support": "^8.0|^9.0|^10.0|^11.0"
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4.4",
